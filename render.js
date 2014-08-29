@@ -20,14 +20,14 @@ page.onResourceReceived = function (response) {
     requestIds[requestIds.indexOf(response.id)] = null;
   }
 };
-page.onResourceRequested = function (request) {
+page.onResourceRequested = function (requestData, request) {
   //console.log(request.id)
-  if(requestIds.indexOf(request.id) === -1) {
-    requestIds.push(request.id);
+  if(requestIds.indexOf(requestData.id) === -1) {
+    requestIds.push(requestData.id);
     requestCount++;
   }
-  if ((/google-analytics.com/gi).test(request['url'])){
-      console.log('Request to GA. Aborting: ' + request['url']);
+  if ((/google-analytics.com/gi).test(requestData['url'])){
+      //console.log('Request to GA. Aborting: ' + requestData['url']);
       request.abort();
   }
 };
