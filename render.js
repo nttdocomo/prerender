@@ -9,7 +9,6 @@ var requestCount = 0;
 var responseCount = 0;
 var requestIds = [];
 var startTime = new Date().getTime();
-var checkCompleteInterval;
 
 page.settings.loadImages = false;
 
@@ -27,26 +26,40 @@ page.onResourceRequested = function (request) {
     requestIds.push(request.id);
     requestCount++;
   }
-  if ((/google-analytics.com/gi).test(requestData['url'])){
-      console.log('Request to GA. Aborting: ' + requestData['url']);
+  if ((/google-analytics.com/gi).test(request['url'])){
+      console.log('Request to GA. Aborting: ' + request['url']);
       request.abort();
   }
 };
 page.onResourceError = function(resourceError) {
+  console.log('Unable to load resource (#' + resourceError.id + 'URL:' + resourceError.url + ')');
+  console.log('Error code: ' + resourceError.errorCode + '. Description: ' + resourceError.errorString);
   clearInterval(checkCompleteInterval);
+  phantom.exit();
 };
 page.onResourceTimeout = function(request) {
+    console.log('Response (#' + request.id + '): ' + JSON.stringify(request));
     clearInterval(checkCompleteInterval);
+    phantom.exit();
 };
 page.onError = function(msg, trace) {
+  var msgStack = ['ERROR: ' + msg];
+
+  if (trace && trace.length) {
+    msgStack.push('TRACE:');
+    trace.forEach(function(t) {
+      msgStack.push(' -> ' + t.file + ': ' + t.line + (t.function ? ' (in function "' + t.function +'")' : ''));
+    });
+  }
+
+  console.error(msgStack.join('\n'));
   clearInterval(checkCompleteInterval);
+  phantom.exit();
 };
 // Let us check to see if the page is finished rendering
-page.onLoadFinished = function(status) {
-  console.log('Status: ' + status);
+/*page.onLoadFinished = function(status) {
   checkCompleteInterval = setInterval(checkComplete, 200);
-  // Do other things here...
-};
+};*/
 
 page.open(url, function () {});
 
@@ -55,6 +68,8 @@ var checkComplete = function () {
   // don't return until all requests are finished
   if(new Date().getTime() - lastReceived > 300 && requestCount === responseCount)  {
     clearInterval(checkCompleteInterval);
+    console.log(page.content);
     phantom.exit();
   }
 }
+var checkCompleteInterval = setInterval(checkComplete, 1);

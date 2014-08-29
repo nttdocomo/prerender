@@ -31,8 +31,8 @@ http.createServer(function(request, response) {
   });
 
   phantom.on('exit', function (code) {
-    response.write(content, "utf8");
-    response.end();
+    response.writeHead(200, {'Content-Type': 'text/html'});
+    response.end(content);
   });
 }).listen(parseInt(port, 10));
 
