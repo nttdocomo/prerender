@@ -31,7 +31,7 @@ page.onResourceRequested = function (requestData, request) {
       request.abort();
   }
 };
-page.onResourceError = function(resourceError) {
+/*page.onResourceError = function(resourceError) {
   console.log('Unable to load resource (#' + resourceError.id + 'URL:' + resourceError.url + ')');
   console.log('Error code: ' + resourceError.errorCode + '. Description: ' + resourceError.errorString);
   clearInterval(checkCompleteInterval);
@@ -55,7 +55,7 @@ page.onError = function(msg, trace) {
   console.error(msgStack.join('\n'));
   clearInterval(checkCompleteInterval);
   phantom.exit();
-};
+};*/
 // Let us check to see if the page is finished rendering
 /*page.onLoadFinished = function(status) {
   checkCompleteInterval = setInterval(checkComplete, 200);
