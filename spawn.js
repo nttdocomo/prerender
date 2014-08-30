@@ -3,7 +3,7 @@ var spawn = require('child_process').spawn;
 function startServer(){
     var server;
     console.log('start server');
-    server = spawn('node',['daemon.js'],{
+    server = spawn('nodejs',['daemon.js'],{
         detached : true,
         stdio: ['ignore', 'ignore', 'ignore']
     });
