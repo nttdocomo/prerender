@@ -2,7 +2,7 @@ var http = require("http"),
     querystring = require("querystring"),
     path = require("path"),
     fs = require("fs"),
-    port = (process.argv[2] || 8888),
+    port = (process.argv[2] || 8088),
     prerender = process.argv[3] || false;
 
 var mimeTypes = {
