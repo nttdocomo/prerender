@@ -1,4 +1,5 @@
 var http = require("http"),
+    url = require('url'),
     querystring = require("querystring"),
     path = require("path"),
     fs = require("fs"),
@@ -17,26 +18,26 @@ var mimeTypes = {
 
 var virtualDirectories = {
     //"images": "../images/"
-  };
+};
 
 http.createServer(function(request, response) {
-  var parts = url.parse(request.url, true);
-  var query = parts.query;
-  console.log(query);
-  var url = 'http://' + request.headers['x-forwarded-host'] || 'localhost:8080' + '/#!' + query['_escaped_fragment_'],
-  content = '',
-  phantom = require('child_process').spawn('phantomjs', ['render.js', url]);
-  phantom.stdout.setEncoding('utf8');
-  phantom.stdout.on('data', function (data) {
-    content += data.toString();
-  });
-  phantom.stderr.on('data', function (data) {
-  });
+    var parts = url.parse(request.url, true);
+    var query = parts.query;
+    console.log(query);
+    var uri = 'http://' + request.headers['x-forwarded-host'] || 'localhost:8080' + '/#!' + query['_escaped_fragment_'],
+    content = '',
+    phantom = require('child_process').spawn('phantomjs', ['render.js', uri]);
+    phantom.stdout.setEncoding('utf8');
+    phantom.stdout.on('data', function (data) {
+        content += data.toString();
+    });
+    phantom.stderr.on('data', function (data) {
+    });
 
-  phantom.on('exit', function (code) {
-    response.writeHead(200, {'Content-Type': 'text/html'});
-    response.end(content);
-  });
+    phantom.on('exit', function (code) {
+        response.writeHead(200, {'Content-Type': 'text/html'});
+        response.end(content);
+    });
 }).listen(parseInt(port, 10));
 
 console.log("Running on http://localhost:" + port + " with pre-render " + (prerender ? 'enabled' : 'disabled') + " \nCTRL + C to shutdown");
