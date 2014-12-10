@@ -23,7 +23,7 @@ var virtualDirectories = {
 http.createServer(function(request, response) {
     var parts = url.parse(request.url, true);
     var query = parts.query;
-    var uri = 'http://' + request.headers['x-forwarded-host'] || 'localhost:8080' + '/#!' + query['_escaped_fragment_'],
+    var uri = 'http://' + (request.headers['x-forwarded-host'] || 'localhost:8080') + '/#!' + query['_escaped_fragment_'],
     content = '',
     phantom = require('child_process').spawn('phantomjs', ['render.js', uri]);
     console.log(uri);
