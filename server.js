@@ -20,7 +20,7 @@ var virtualDirectories = {
   };
 
 http.createServer(function(request, response) {
-  var url = 'http://' + request.headers['x-forwarded-host'] || 'localhost:8080' + '/#' + request.url.replace(/^\//,''),
+  var url = 'http://' + request.headers['x-forwarded-host'] || 'www.kick11.us' + '/#' + request.url.replace(/^\//,''),
   content = '',
   phantom = require('child_process').spawn('phantomjs', ['render.js', url]);
   phantom.stdout.setEncoding('utf8');
